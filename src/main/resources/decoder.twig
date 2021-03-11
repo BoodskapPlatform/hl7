@@ -1,0 +1,35 @@
+package {{ pkg }};
+
+import java.util.Map;
+
+import ca.uhn.hl7v2.HapiContext;
+import ca.uhn.hl7v2.model.Message;
+import ca.uhn.hl7v2.model.Structure;
+import ca.uhn.hl7v2.parser.Parser;
+import io.boodskap.hl7.MessageDecoder;
+{% for name in names %}
+import {{ name }};
+{% endfor %}
+
+public class Decoder implements MessageDecoder {
+
+	@SuppressWarnings("unused")
+	@Override
+	public Map<?, ?> decode(HapiContext context, Parser parser, Message msg, String data) throws Exception {
+
+		for (String type : msg.getNames()) {
+
+			Structure s = msg.get(type);
+
+{% for sname in snames %}
+			else if(s instanceof {{ sname }}){
+				{{ sname }} v = ({{ sname }}) s;
+			} 
+{% endfor %}
+
+		}
+		
+		return null;
+	}
+
+}
